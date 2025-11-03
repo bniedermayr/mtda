@@ -1,0 +1,43 @@
+From 4ffc22930573b1ab810fb244ef7975073f8b35e4 Mon Sep 17 00:00:00 2001
+From: Felix Moessbauer <felix.moessbauer@siemens.com>
+Date: Mon, 3 Nov 2025 16:32:39 +0100
+Subject: [PATCH 2/2] do not add cross profile when building native package
+
+When building a -native package, the cross profile must not be added as
+otherwise stricter apt cache checks added in trixie trigger. It anyways
+makes no sense to add the cross profile when BUILD_ARCH equals
+PACKAGE_ARCH. Previously this check was implemented incorrectly, as the
+build arch was compared to the DISTRO_ARCH, which is always the target
+arch in isar terms. This resulted in the following error message in
+sbuild:
+
+ E: The package cache was built for different architectures: amd64 vs arm64
+ W: You may want to run apt-get update to correct these problems
+ E: The package cache file is corrupted
+ E: apt-get dist-upgrade failed
+
+On bookworm, the incorrect check remained unnoticed, as apt did not have
+the stricter checks yet.
+
+Fixes: 872ef2e3 ("dpkg-base: Fix enabling of cross build profile")
+Signed-off-by: Felix Moessbauer <felix.moessbauer@siemens.com>
+---
+ meta/classes/dpkg-base.bbclass | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta/classes/dpkg-base.bbclass b/meta/classes/dpkg-base.bbclass
+index 4468a49a337c..ec31d72c30da 100644
+--- a/meta/classes/dpkg-base.bbclass
++++ b/meta/classes/dpkg-base.bbclass
+@@ -146,7 +146,7 @@ dpkg_runbuild() {
+ 
+ def isar_deb_build_profiles(d):
+     deb_build_profiles = d.getVar('DEB_BUILD_PROFILES')
+-    if d.getVar('BUILD_ARCH') != d.getVar('DISTRO_ARCH'):
++    if (d.getVar('BUILD_ARCH') != d.getVar('PACKAGE_ARCH')):
+         deb_build_profiles += ' cross'
+     return deb_build_profiles.strip()
+ 
+-- 
+2.43.0
+

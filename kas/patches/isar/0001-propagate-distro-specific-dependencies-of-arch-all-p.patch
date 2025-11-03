@@ -1,0 +1,41 @@
+From 8bc1fb82772b60f6a6272e886e42478c34330d05 Mon Sep 17 00:00:00 2001
+From: Felix Moessbauer <felix.moessbauer@siemens.com>
+Date: Mon, 3 Nov 2025 14:06:13 +0100
+Subject: [PATCH 1/2] propagate distro-specific dependencies of arch all
+ packages
+
+DPKG_ARCH=all packages are always build in their -native variant.
+However, these packages still can have non-native dependencies which
+must be built for the distro arch.
+
+Fixes: 23a73895 ("multiarch: inject native variants of preferred providers")
+Signed-off-by: Felix Moessbauer <felix.moessbauer@siemens.com>
+---
+ meta/classes/multiarch.bbclass | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/meta/classes/multiarch.bbclass b/meta/classes/multiarch.bbclass
+index c2bba21f0497..74b8f5b878e7 100644
+--- a/meta/classes/multiarch.bbclass
++++ b/meta/classes/multiarch.bbclass
+@@ -106,11 +106,13 @@ python multiarch_virtclass_handler() {
+         # Arch=all packages might build depend on other arch=all packages,
+         # hence we need to correctly model the dependency chain.
+         # We implement this by dispatching the non-native variant to the -native
+-        # variant by adding a dependency. We further replace the non-native
+-        # do_deploy_dep task with a noop to preserve the dependency chain.
++        # variant by adding a dependency. We further empty the non-native
++        # do_deploy_dep task and clear the internal dependency chain, but keep
++        # other attached variables like RDEPENDS to preserve the dependency chain.
+         e.data.setVar('do_deploy_deb', '')
+-        bb.build.deltask('deploy_deb', e.data)
+-        bb.build.addtask('deploy_deb', 'do_build', '', e.data)
++        # clear internal dependencies (e.g. to do_dpkg_build)
++        e.data.setVarFlag('do_deploy_deb', 'deps', [])
++        # dispatch to native variant
+         e.data.setVarFlag('do_deploy_deb', 'depends', f'{pn}-native:do_deploy_deb')
+ }
+ addhandler multiarch_virtclass_handler
+-- 
+2.43.0
+
