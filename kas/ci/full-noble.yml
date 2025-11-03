@@ -14,7 +14,7 @@ distro: ubuntu-noble
 machine: qemuamd64
 
 header:
-  version: 17
+  version: 20
   includes:
     - kas/common/base.yml
 

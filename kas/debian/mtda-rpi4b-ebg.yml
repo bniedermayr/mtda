@@ -13,7 +13,7 @@ build_system: isar
 machine: rpi4b-ebg
 
 header:
-  version: 17
+  version: 20
   includes:
     - kas/common/base.yml
     - kas/debian/bookworm-base.yml

@@ -13,7 +13,7 @@ build_system: isar
 machine: rpi-arm64-v8-efi
 
 header:
-  version: 17
+  version: 20
   includes:
     - kas/common/base.yml
     - kas/debian/bookworm-base.yml
