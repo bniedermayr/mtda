@@ -10,5 +10,6 @@ build
 cip-core
 dist
 isar
+!kas/patches/isar
 mtda.egg-info
 /meta-isar/recipes-conf/local-settings/local.inc
