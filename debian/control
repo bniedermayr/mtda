@@ -10,7 +10,7 @@ Build-Depends: debhelper (>=10) | dh-systemd,
                python3-sphinx:native <!nodoc>,
                python3-sphinx-rtd-theme:native <!nodoc>
 Rules-Requires-Root: no
-Standards-Version: 4.5.0 
+Standards-Version: 4.5.0
 Homepage: https://github.com/siemens/mtda
 X-Python3-Version: >= 3.7
 
@@ -82,7 +82,7 @@ Package: mtda-common
 Architecture: all
 Multi-Arch: foreign
 Depends: python3:any (>= 3.7~),
-         python3-pyro5 | python3-pyro4
+         python3-pyro5
 Description: common modules for Multi-Tenant Device Access
  Modules shared between the service and the client.
 
