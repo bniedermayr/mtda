@@ -80,7 +80,7 @@ class Application:
             return False
 
         # Start our RPC server
-        Pyro4.config.HOST = "0.0.0.0"
+        os.environ["PYRO_HOST"] = "0.0.0.0"
         Pyro4.config.SERIALIZER = "marshal"
         daemon = Pyro4.Daemon(port=self.agent.ctrlport)
         daemon.register(self.agent, objectId="mtda.main")
