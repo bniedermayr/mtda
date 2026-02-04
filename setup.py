@@ -58,7 +58,7 @@ and testers to remotely access and control hardware devices.
         "netifaces>=0.11.0",
         "pyserial>=2.6",
         "python-daemon>=2.0",
-        "pyro4>=4.82",
+        "pyro5>=5.16",
         "pyusb>=1.0",
         "pyzmq>=15.0",
         "psutil",
